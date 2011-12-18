@@ -1,12 +1,5 @@
-
-/* ***************************************************************************
- * Cakephp AutocachePlugin
- * Nicholas de Jong - http://nicholasdejong.com - https://github.com/ndejong
- * 18 December 2011
- * 
- * @author Nicholas de Jong
- * @copyright Nicholas de Jong
- * ***************************************************************************/
+CakephpAutocachePlugin
+======================
 
 CakephpAutocachePlugin is a CakePHP 2.0x Plugin that makes query caching as easy 
 as adding a 'autocache'=>true condition to your Model query.  This plugin follows 
@@ -17,8 +10,7 @@ suggestions, thanks Mark!
 Install
 =======
 
-Step 1
-------
+### Step 1
 Copy or symlink CakephpAutocachePlugin into a path named Autocache in your Plugin
 path like this:-
 >  app/Plugin/Autocache
@@ -28,20 +20,17 @@ or CakephpAutocachePlugin, it's just Autocache.  I spell this out because it's
 an easy thing to trip up on especially if your pulling this down from github or
 unpacking from a tarball.
 
-Step 2
-------
+### Step 2
 Make sure you have at least one standard CakePHP cache configuration setup in 
 core.php or bootstrap.php.  You can call your first cache configuration 'default' 
 and just set it up as a File based cache, like this:-
 >  Cache::config('default', array('engine' => 'File'));
 
-Step 3
-------
+### Step 3
 While you have bootstrap.php open, tell Cake to load the plugin like this:-
 >  CakePlugin::load('Autocache');
 
-Step 4
-------
+### Step 4
 Tell your model(s) they $actsAs Autocache by adding this to the top part of the 
 model definition you want Autocache enabled for.  Alternatively you could just put
 this into the AppModel.php thus enabling Autocache for all models
@@ -49,13 +38,11 @@ this into the AppModel.php thus enabling Autocache for all models
 
 Note the Behavior settings possible here in the section below.
 
-Step 5
-------
+### Step 5
 Add an 'autocache' condition to your find query, see further below for the various 
 options you have here but it can be as simple as just 'autocache' => true.
 
-Step 6
-------
+### Step 6
 Fire up the AutocachePlugin Tests, they should all pass.
 
 
