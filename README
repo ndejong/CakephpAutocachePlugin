@@ -180,3 +180,11 @@ A: AutocachePlugin follows on from AutocacheBehavior which was an an improvement
    borrowed from ideas "jamienay" had put forward in his automatic_query_caching
      - nicholasdejong.com/story/automatic-model-data-caching-cakephp
      - github.com/jamienay/automatic_query_caching
+
+Q: What's different about CakephpAutocachePlugin to CakephpAutocacheBehavior?
+A: Probably the biggest "thing" is the change in the find condition option name
+   from 'cache' to 'autocache' - yes the option name is longer but it is clearer 
+   and better aligns with the rest of naming.  Other stuff includes, there is no
+   need to specify the autocache datasource configuration anymore, we deal with
+   that automatically while it can be overridden via the dummy_datasource parameter.
+   ... the the Plugin is just easier to use!
