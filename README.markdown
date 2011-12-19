@@ -13,6 +13,7 @@ Install
 ### Step 1
 Copy or symlink CakephpAutocachePlugin into a path named Autocache in your Plugin
 path like this:-
+
 >  app/Plugin/Autocache
 
 Take careful note of the pathname, the name is "Autocache", not AutocachePlugin
@@ -24,16 +25,19 @@ unpacking from a tarball.
 Make sure you have at least one standard CakePHP cache configuration setup in 
 core.php or bootstrap.php.  You can call your first cache configuration 'default' 
 and just set it up as a File based cache, like this:-
+
 >  Cache::config('default', array('engine' => 'File'));
 
 ### Step 3
 While you have bootstrap.php open, tell Cake to load the plugin like this:-
+
 >  CakePlugin::load('Autocache');
 
 ### Step 4
 Tell your model(s) they $actsAs Autocache by adding this to the top part of the 
 model definition you want Autocache enabled for.  Alternatively you could just put
 this into the AppModel.php thus enabling Autocache for all models
+
 >  public $actsAs = array('Autocache.Autocache');
 
 Note the Behavior settings possible here in the section below.
@@ -120,6 +124,7 @@ Autocache Behavior Setting Examples
 -----------------------------------
 
 From the model:-
+
 >  $actsAs = array('Autocache.Autocache')
 
 >  $actsAs = array('Autocache.Autocache',array('default_cache'=>'level_1'));
@@ -127,6 +132,7 @@ From the model:-
 >  $actsAs = array('Autocache.Autocache',array('default_cache'=>'level_1','check_cache'=>false));
 
 From the Controller through a Behavior "attach":-
+
 >  $this->MyModelName->Behaviors->attach('Autocache.Autocache',array('default_cache'=>'level_2'));
 
 
@@ -165,6 +171,7 @@ Q: What's the history?
 A: AutocachePlugin follows on from AutocacheBehavior which was an an improvement 
    on "Automatic model data caching for CakePHP" that I wrote a while back.  I
    borrowed from ideas "jamienay" had put forward in his automatic_query_caching
+
      - nicholasdejong.com/story/automatic-model-data-caching-cakephp
      - github.com/jamienay/automatic_query_caching
 
