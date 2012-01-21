@@ -106,7 +106,7 @@ class AutocacheBehavior extends ModelBehavior {
 			$database_config = &ConnectionManager::$config;
 			if(!isset($database_config->{$this->runtime['dummy_datasource']})) {
 				$datasource_name = (string) $this->runtime['dummy_datasource'];
-				$database_config->$datasource_name = array('datasource' => str_replace('Behavior','',get_class($this)).'.AutocacheSource');
+				$database_config->$datasource_name = array('datasource' => str_replace('Behavior','',get_class($this)).'.AutocacheSource', 'database'=>null);
 			}
 
 			// Use a dummy database connection to prevent any query
