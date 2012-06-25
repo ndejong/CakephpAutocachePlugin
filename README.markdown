@@ -2,7 +2,7 @@ CakephpAutocachePlugin
 ======================
 
 CakephpAutocachePlugin is a CakePHP 2.0x Plugin that makes query caching as easy 
-as adding a 'autocache'=>true condition to your Model query.  This plugin follows 
+as adding a 'autocache'=>true parameter to your Model query.  This plugin follows 
 on from CakephpAutocacheBehavior on Mark Scherer's (https://github.com/dereuromark) 
 suggestions, thanks Mark!
 
@@ -46,7 +46,7 @@ this into the AppModel.php thus enabling Autocache for all models
 Note the Behavior settings possible here in the section below.
 
 ### Step 5
-Add an 'autocache' condition to your find query, see further below for the various 
+Add an 'autocache' parameter to your find query, see further below for the various 
 options you have here but it can be as simple as just 'autocache' => true.
 
 ### Step 6
@@ -56,7 +56,7 @@ Fire up the AutocachePlugin Tests, they should all pass.
 Usage
 -----
 
-### Find Condition Options
+### Find Parameter Options
 
 This is the fun stuff, and where Autocache really shines the with its simplicity 
 in usage, there are just three options:-
@@ -82,7 +82,7 @@ to access it in the following ways.
  - if the 'autocache' option is a string, we use this string as the cache 
    configuration name to use.
 
-### Find Condition Option Examples
+### Find Parameter Option Examples
 
     $params = array('autocache'=>true)
 
@@ -90,9 +90,9 @@ to access it in the following ways.
 
     $params = array('autocache'=>array('config'=>'default'))
 
-    $params = array('cache'=>array('name'=>'some_name'))
+    $params = array('autocache'=>array('name'=>'some_name'))
 
-    $params = array('cache'=>array('flush'=>true))
+    $params = array('autocache'=>array('flush'=>true))
 
 The first three are essentially the same thing expressed differently
 
@@ -106,7 +106,7 @@ the behavior is not there the variable will not be set...
 ### Autocache Behavior Settings
 
  - default_cache << defines the default cache configuration name to use when a 
-   find query contains an 'autocache' condition without an explicit cache 
+   find query contains an 'autocache' parameter without an explicit cache 
    configuration name.  By default the name is 'default'
 
  - check_cache << tells Autocache to check if the cache configuration name that 
@@ -174,7 +174,7 @@ A: AutocachePlugin follows on from AutocacheBehavior which was an an improvement
  - github.com/jamienay/automatic_query_caching
 
 Q: What's different about CakephpAutocachePlugin to CakephpAutocacheBehavior?  
-A: Probably the biggest "thing" is the change in the find condition option name
+A: Probably the biggest "thing" is the change in the find parameter option name
    from 'cache' to 'autocache' - yes the option name is longer but it is clearer 
    and better aligns with the rest of naming.  Other stuff includes, there is no
    need to specify the autocache datasource configuration anymore, we deal with
