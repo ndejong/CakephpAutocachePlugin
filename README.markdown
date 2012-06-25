@@ -84,15 +84,15 @@ to access it in the following ways.
 
 ### Find Condition Option Examples
 
-    $conditions = array('autocache'=>true)
+    $params = array('autocache'=>true)
 
-    $conditions = array('autocache'=>'default')
+    $params = array('autocache'=>'default')
 
-    $conditions = array('autocache'=>array('config'=>'default'))
+    $params = array('autocache'=>array('config'=>'default'))
 
-    $conditions = array('cache'=>array('name'=>'some_name'))
+    $params = array('cache'=>array('name'=>'some_name'))
 
-    $conditions = array('cache'=>array('flush'=>true))
+    $params = array('cache'=>array('flush'=>true))
 
 The first three are essentially the same thing expressed differently
 
