@@ -122,7 +122,7 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @param Model $model
 	 * @param array $results
 	 */
-	public function afterFind(Model $model, $results) {
+	public function afterFind(Model $model, $results, $primary) {
 
 		// debug($model);
 		// debug($results);
