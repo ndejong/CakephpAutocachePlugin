@@ -59,7 +59,7 @@ class AutocacheBehavior extends ModelBehavior {
 		// database.php file should look something like this:-
 		// public $autocache = array('datasource' => 'AutocacheSource');
 
-		$this->runtime = array_merge(array(
+		$this->runtime[$model->alias] = array_merge(array(
 			
 			// check if the named cache config is loaded
 			'check_cache' => ( Configure::read('debug') > 0) ? true : false,
@@ -70,6 +70,19 @@ class AutocacheBehavior extends ModelBehavior {
 			// name of the autocache dummy datasource *config* name
 			'dummy_datasource' => 'autocache',
 		), (array) $config);
+
+		// Create the new cache config
+		$newCacheName = $this->runtime[$model->alias]['default_cache'] . 'Model' . $model->alias;
+		$defaultCacheConfig = Cache::config($this->runtime[$model->alias]['default_cache']);
+		$modelCacheConfig = array_merge(
+			$defaultCacheConfig['settings'],
+			array(
+				'groups' => array($newCacheName)
+			)
+		);
+
+		Cache::config($newCacheName, $modelCacheConfig);
+		$this->runtime[$model->alias]['default_cache'] = $newCacheName;
 	}
 
 	/**
@@ -80,9 +93,19 @@ class AutocacheBehavior extends ModelBehavior {
 	 */
 	public function beforeFind(Model $model, $query) {
 
+		// Don't cache if we are refreshing the page
+		if(isset($_SERVER['HTTP_CACHE_CONTROL']) && (($_SERVER['HTTP_CACHE_CONTROL'] == 'no-cache') || ($_SERVER['HTTP_CACHE_CONTROL'] == 'max-age=0'))) {
+			$query['autocache']['flush'] = true;
+		}
+
 		// Determine if we are even going to try using the cache
-		if (!isset($query['autocache']) || $query['autocache'] === false) {
+		if (isset($query['autocache']) && ($query['autocache'] === false)) {
 			return true; // return early as we have nothing to do
+		}
+
+		// Cache everything by default
+		if(!isset($query['autocache'])){
+			$query['autocache'] = true;
 		}
 
 		// Provides a place in the Model that we can use to find out what 
@@ -93,27 +116,27 @@ class AutocacheBehavior extends ModelBehavior {
 		$this->_doCachingRuntimeSetup($model, $query);
 
 		// Load cached results if they are available
-		$this->_loadCachedResults();
+		$this->_loadCachedResults($model);
 
 		// Return the cached results if they exist
 		if ($this->__cached_results) {
 
 			// Note the original useDbConfig
-			$this->runtime['useDbConfig'] = $model->useDbConfig;
+			$this->runtime[$model->alias]['useDbConfig'] = $model->useDbConfig;
 			
 			// Check if a DATABASE_CONFIG has been made for the dummy_datasource 
 			// if not establish one based on standard naming
 			$database_config = &ConnectionManager::$config;
-			if(!isset($database_config->{$this->runtime['dummy_datasource']})) {
-				$datasource_name = (string) $this->runtime['dummy_datasource'];
+			if(!isset($database_config->{$this->runtime[$model->alias]['dummy_datasource']})) {
+				$datasource_name = (string) $this->runtime[$model->alias]['dummy_datasource'];
 				$database_config->$datasource_name = array('datasource' => str_replace('Behavior','',get_class($this)).'.AutocacheSource', 'database'=>null);
 			}
 
 			// Use a dummy database connection to prevent any query
-			$model->useDbConfig = $this->runtime['dummy_datasource'];
+			$model->useDbConfig = $this->runtime[$model->alias]['dummy_datasource'];
 		}
 
-		return true;
+		return $query;
 	}
 
 	/**
@@ -127,10 +150,10 @@ class AutocacheBehavior extends ModelBehavior {
 		// debug($model);
 		// debug($results);
 		// Check if we set useDbConfig in beforeFind above
-		if (isset($this->runtime['useDbConfig'])) {
+		if (isset($this->runtime[$model->alias]['useDbConfig'])) {
 
 			// reset the useDbConfig attribute back to what it was
-			$model->useDbConfig = $this->runtime['useDbConfig'];
+			$model->useDbConfig = $this->runtime[$model->alias]['useDbConfig'];
 
 			// A flag to indicate in the Model if the last query was from cache
 			if ($this->__cached_results) {
@@ -142,8 +165,8 @@ class AutocacheBehavior extends ModelBehavior {
 		}
 
 		// Cache the result if there is a config defined
-		if (isset($this->runtime['config'])) {
-			Cache::write($this->runtime['name'], $results, $this->runtime['config']);
+		if (isset($this->runtime[$model->alias]['config']) && !isset($this->runtime[$model->alias]['flush'])) {
+			Cache::write($this->runtime[$model->alias]['name'], $results, $this->runtime[$model->alias]['config']);
 		}
 
 		return $results;
@@ -159,35 +182,36 @@ class AutocacheBehavior extends ModelBehavior {
 
 		// Treat the cache config as a named cache config
 		if (is_string($query['autocache'])) {
-			$this->runtime['config'] = $query['autocache'];
-			$this->runtime['name'] = $this->_generateCacheName($model, $query);
+			$this->runtime[$model->alias]['config'] = $query['autocache'];
+			$this->runtime[$model->alias]['name'] = $this->_generateCacheName($model, $query);
 
 		} else {  // All other cache setups
 
 			// Manage the cache config
 			if (isset($query['autocache']['config']) && !empty($query['autocache']['config'])) {
-				$this->runtime['config'] = $query['autocache']['config'];
+				$this->runtime[$model->alias]['config'] = $query['autocache']['config'];
 			} else {
-				$this->runtime['config'] = $this->runtime['default_cache'];
+				$this->runtime[$model->alias]['config'] = $this->runtime[$model->alias]['default_cache'];
 			}
 
 			// Manage the cache name
 			if (isset($query['autocache']['name']) && !empty($query['autocache']['name'])) {
-				$this->runtime['name'] = $query['autocache']['name'];
+				$this->runtime[$model->alias]['name'] = $query['autocache']['name'];
 			} else {
-				$this->runtime['name'] = $this->_generateCacheName($model, $query);
+				$this->runtime[$model->alias]['name'] = $this->_generateCacheName($model, $query);
 			}
 		}
 
 		// Check the cache config really exists, else no caching is going to happen
-		if ($this->runtime['check_cache'] && !Configure::read('Cache.disable') && !Cache::config($this->runtime['config'])) {
-			throw new CacheException('Attempting to use undefined cache configuration named ' . $this->runtime['config']);
+		if ($this->runtime[$model->alias]['check_cache'] && !Configure::read('Cache.disable') && !Cache::config($this->runtime[$model->alias]['config'])) {
+			throw new CacheException('Attempting to use undefined cache configuration named ' . $this->runtime[$model->alias]['config']);
 		}
 
 		// Cache flush control
 		if (isset($query['autocache']['flush']) && $query['autocache']['flush'] === true) {
-			$this->runtime['flush'] = true;
+			$this->runtime[$model->alias]['flush'] = true;
 		}
+
 	}
 
 	/**
@@ -215,17 +239,51 @@ class AutocacheBehavior extends ModelBehavior {
 	/**
 	 * _loadCachedResults
 	 */
-	protected function _loadCachedResults() {
+	protected function _loadCachedResults($model) {
 
 		// Flush the cache if required
-		if (isset($this->runtime['flush']) && true === $this->runtime['flush']) {
-			Cache::delete($this->runtime['name'], $this->runtime['config']);
+		if (isset($this->runtime[$model->alias]['flush']) && true === $this->runtime[$model->alias]['flush']) {
+			Cache::delete($this->runtime[$model->alias]['name'], $this->runtime[$model->alias]['config']);
 			$this->__cached_results = false;
 		}
 		else {
 			// Catch the cached result
-			$this->__cached_results = Cache::read($this->runtime['name'], $this->runtime['config']);
+			$this->__cached_results = Cache::read($this->runtime[$model->alias]['name'], $this->runtime[$model->alias]['config']);
 		}
+	}
+
+
+
+	/**
+	 * afterSave Callback
+	 *
+	 * Invalidates the cache group for this model.
+	 *
+	 * @param Model $model Model the callback is called on
+	 * @param boolean $created Whether or not the save created a record.
+	 * @return void
+	 */
+	public function afterSave(Model $model, $created) {
+
+		$cacheGroupName = $this->runtime[$model->alias]['default_cache'];
+		$cacheName = $cacheGroupName;
+
+		Cache::clearGroup($cacheGroupName, $cacheName);
+	}
+
+	/**
+	 * afterDelete Callback
+	 *
+	 * Invalidates the cache group for this model.
+	 *
+	 * @param Model $model Model the callback was run on.
+	 * @return void
+	 */
+	public function afterDelete(Model $model) {
+		$cacheGroupName = $this->runtime[$model->alias]['default_cache'];
+		$cacheName = $cacheGroupName;
+
+		Cache::clearGroup($cacheGroupName, $cacheName);
 	}
 
 }
