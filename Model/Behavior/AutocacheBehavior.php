@@ -154,6 +154,7 @@ class AutocacheBehavior extends ModelBehavior {
 
 			// reset the useDbConfig attribute back to what it was
 			$model->useDbConfig = $this->runtime[$model->alias]['useDbConfig'];
+			unset($this->runtime[$model->alias]['useDbConfig']);
 
 			// A flag to indicate in the Model if the last query was from cache
 			if ($this->__cached_results) {
