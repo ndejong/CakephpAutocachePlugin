@@ -92,12 +92,7 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @param array $query 
 	 */
 	public function beforeFind(Model $model, $query) {
-
-		// Don't cache if we are refreshing the page
-		if(isset($_SERVER['HTTP_CACHE_CONTROL']) && (($_SERVER['HTTP_CACHE_CONTROL'] == 'no-cache') || ($_SERVER['HTTP_CACHE_CONTROL'] == 'max-age=0'))) {
-			$query['autocache']['flush'] = true;
-		}
-
+            
 		// Determine if we are even going to try using the cache
 		if (isset($query['autocache']) && ($query['autocache'] === false)) {
 			return true; // return early as we have nothing to do
@@ -145,7 +140,7 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @param Model $model
 	 * @param array $results
 	 */
-	public function afterFind(Model $model, $results, $primary) {
+	public function afterFind(Model $model, $results, $primary = false) {
 
 		// debug($model);
 		// debug($results);
@@ -264,7 +259,7 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @param boolean $created Whether or not the save created a record.
 	 * @return void
 	 */
-	public function afterSave(Model $model, $created) {
+	public function afterSave(Model $model, $created, $options = array()) {
 
 		$cacheGroupName = $this->runtime[$model->alias]['default_cache'];
 		$cacheName = $cacheGroupName;

@@ -45,7 +45,7 @@ class AutocacheTestCase extends CakeTestCase {
 	 *
 	 * @return void
 	 */
-	public function startTest() {
+	public function startTest($method) {
 
 		$this->cache_path = CACHE . 'models' . DS;
 
@@ -65,7 +65,7 @@ class AutocacheTestCase extends CakeTestCase {
 	 *
 	 * @return void
 	 */
-	public function endTest() {
+	public function endTest($method) {
 		unset($this->Article);
 	}
 
@@ -162,7 +162,7 @@ class AutocacheTestCase extends CakeTestCase {
 		$this->assertFalse($this->User->autocache_is_from);
 
 		# check if filename starting with "cake_autocache_first_article_" exists
-		$files = glob($this->cache_path . 'cake_autocache_first_user_*');
+		$files = $this->_glob_recursive($this->cache_path . 'cake_autocache_first_user_*');
 		$this->assertTrue((1 === count($files))); // always 1 because Cache::clear(); is used above
 		# Second query result should equal first query
 		$result_2 = $this->User->find('first', $conditions);
@@ -193,11 +193,14 @@ class AutocacheTestCase extends CakeTestCase {
 		$this->assertFalse($this->Article->autocache_is_from);
 
 		# check if filename starting with "cake_autocache_first_article_" exists
-		$files = glob($this->cache_path . 'cake_autocache_first_article_*');
+		$files = $this->_glob_recursive($this->cache_path . 'cake_autocache_first_article_*');
 		if (is_array($autocache) && isset($autocache['name'])) {
-			$files = glob($this->cache_path . 'cake_' . $autocache['name'] . '*');
+			$files = $this->_glob_recursive($this->cache_path . 'cake_' . $autocache['name'] . '*');
 		}
-		$this->assertTrue((1 === count($files))); // always 1 because Cache::clear(); is used above
+                
+		if(isset($autocache['flush']) && $autocache['flush'] !== true) {
+                    $this->assertTrue((1 === count($files))); // always 1 because Cache::clear(); is used above
+                }
 
 		// Count number of queries before second query for the same data
 		$query_count_before = $this->_queryCount();
@@ -256,6 +259,21 @@ class AutocacheTestCase extends CakeTestCase {
 	protected function _queryCount() {
 		return count($this->_queries());
 	}
+        
+        /**
+         * _glob_recursive
+         * @param type $pattern
+         * @param type $flags
+         * @return type
+         */
+        protected function _glob_recursive($pattern, $flags = 0) {
+            $files = glob($pattern, $flags);
+
+            foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
+                $files = array_merge($files, $this->_glob_recursive($dir . '/' . basename($pattern), $flags));
+            }
+            return $files;
+        }
 
 }
 

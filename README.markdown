@@ -1,7 +1,7 @@
 CakephpAutocachePlugin
 ======================
 
-CakephpAutocachePlugin is a CakePHP 2.0x Plugin that makes query caching as easy 
+CakephpAutocachePlugin is a CakePHP 2.5.x Plugin that makes query caching as easy 
 as adding a 'autocache'=>true parameter to your Model query.  This plugin follows 
 on from CakephpAutocacheBehavior on Mark Scherer's (https://github.com/dereuromark) 
 suggestions, thanks Mark!
