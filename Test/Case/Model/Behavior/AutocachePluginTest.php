@@ -173,6 +173,31 @@ class AutocacheTestCase extends CakeTestCase {
 		// Check the first query result is the same as the second
 		$this->assertSame($result_1, $result_2);
 	}
+        
+	/**
+	 * testDatasourceFunctions
+	 *
+	 * @return void
+	 */
+	public function testDatasourceFunctions() {
+            
+            Cache::clear();
+
+            $this->User->Behaviors->attach('Containable');
+
+            $conditions = array(
+                    'contain' => array('Article'),
+                    'autocache' => true
+            );
+
+            $result_1 = $this->User->find('first', $conditions);
+            $this->assertTrue(!empty($result_1));
+            
+            $db = $this->User->getDataSource();
+            $this->assertTrue(!empty( $db->name('count') ));
+            $this->assertTrue(is_object( $db->identifier('foobar') ));
+            
+	}
 	
 	/**
 	 * _cacheTest
