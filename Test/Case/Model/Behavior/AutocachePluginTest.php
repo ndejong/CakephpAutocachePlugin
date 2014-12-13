@@ -1,15 +1,16 @@
 <?php
 
-/* ***************************************************************************
+/* * **************************************************************************
  * Cakephp AutocachePlugin
  * Nicholas de Jong - http://nicholasdejong.com - https://github.com/ndejong
- * 18 December 2011
  * 
  * Very big thanks to Mark Scherer for setting me straight on _queryCount() and 
- * help with refactoring AutocacheBehaviour into AutocachePlugin
+ * help with refactoring CakephpAutocacheBehaviour into CakephpAutocachePlugin
  *  - https://github.com/dereuromark
  * 
- * ***************************************************************************/
+ * @author Nicholas de Jong
+ * @link https://github.com/ndejong/CakephpAutocachePlugin
+ * ************************************************************************** */
 
 /**
  * Test Case by Mark Scherer
@@ -173,32 +174,31 @@ class AutocacheTestCase extends CakeTestCase {
 		// Check the first query result is the same as the second
 		$this->assertSame($result_1, $result_2);
 	}
-        
+
 	/**
 	 * testDatasourceFunctions
 	 *
 	 * @return void
 	 */
 	public function testDatasourceFunctions() {
-            
-            Cache::clear();
 
-            $this->User->Behaviors->attach('Containable');
+		Cache::clear();
 
-            $conditions = array(
-                    'contain' => array('Article'),
-                    'autocache' => true
-            );
+		$this->User->Behaviors->attach('Containable');
 
-            $result_1 = $this->User->find('first', $conditions);
-            $this->assertTrue(!empty($result_1));
-            
-            $db = $this->User->getDataSource();
-            $this->assertTrue(!empty( $db->name('count') ));
-            $this->assertTrue(is_object( $db->identifier('foobar') ));
-            
+		$conditions = array(
+			'contain' => array('Article'),
+			'autocache' => true
+		);
+
+		$result_1 = $this->User->find('first', $conditions);
+		$this->assertTrue(!empty($result_1));
+
+		$db = $this->User->getDataSource();
+		$this->assertTrue(!empty($db->name('count')));
+		$this->assertTrue(is_object($db->identifier('foobar')));
 	}
-	
+
 	/**
 	 * _cacheTest
 	 * 
@@ -213,7 +213,7 @@ class AutocacheTestCase extends CakeTestCase {
 		$result_1 = $this->Article->find('first', array('autocache' => $autocache));
 		//debug($result_1);
 		//ob_flush();
-		
+
 		$this->assertTrue(!empty($result_1));
 		$this->assertFalse($this->Article->autocache_is_from);
 
@@ -222,29 +222,29 @@ class AutocacheTestCase extends CakeTestCase {
 		if (is_array($autocache) && isset($autocache['name'])) {
 			$files = $this->_glob_recursive($this->cache_path . 'cake_' . $autocache['name'] . '*');
 		}
-                
-		if(isset($autocache['flush']) && $autocache['flush'] !== true) {
-                    $this->assertTrue((1 === count($files))); // always 1 because Cache::clear(); is used above
-                }
+
+		if (isset($autocache['flush']) && $autocache['flush'] !== true) {
+			$this->assertTrue((1 === count($files))); // always 1 because Cache::clear(); is used above
+		}
 
 		// Count number of queries before second query for the same data
 		$query_count_before = $this->_queryCount();
-		
+
 		# Second query result should equal first query
 		$result_2 = $this->Article->find('first', array('autocache' => $autocache));
 		$this->assertTrue(!empty($result_2));
 
 		// Count number of queries before second query for the same data
 		$query_count_after = $this->_queryCount();
-		
+
 		// If flushed we do expect the query to be run so we must compensate
-		if(isset($autocache['flush']) && $autocache['flush'] === true) {
-			$this->assertSame($query_count_before, $query_count_after-1);
+		if (isset($autocache['flush']) && $autocache['flush'] === true) {
+			$this->assertSame($query_count_before, $query_count_after - 1);
 		} else {
 			// Check we still have the same query count and thus did not touch the database
 			$this->assertSame($query_count_before, $query_count_after);
 		}
-		
+
 		// Test result does not come from cache if flushed
 		if (isset($autocache['flush']) && true === $autocache['flush']) {
 			$this->assertFalse($this->Article->autocache_is_from);
@@ -284,21 +284,21 @@ class AutocacheTestCase extends CakeTestCase {
 	protected function _queryCount() {
 		return count($this->_queries());
 	}
-        
-        /**
-         * _glob_recursive
-         * @param type $pattern
-         * @param type $flags
-         * @return type
-         */
-        protected function _glob_recursive($pattern, $flags = 0) {
-            $files = glob($pattern, $flags);
 
-            foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
-                $files = array_merge($files, $this->_glob_recursive($dir . '/' . basename($pattern), $flags));
-            }
-            return $files;
-        }
+	/**
+	 * _glob_recursive
+	 * @param type $pattern
+	 * @param type $flags
+	 * @return type
+	 */
+	protected function _glob_recursive($pattern, $flags = 0) {
+		$files = glob($pattern, $flags);
+
+		foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
+			$files = array_merge($files, $this->_glob_recursive($dir . '/' . basename($pattern), $flags));
+		}
+		return $files;
+	}
 
 }
 

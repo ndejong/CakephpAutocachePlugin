@@ -1,17 +1,16 @@
 <?php
 
-/* ***************************************************************************
+/****************************************************************************
  * Cakephp AutocachePlugin
  * Nicholas de Jong - http://nicholasdejong.com - https://github.com/ndejong
- * 18 December 2011
  * 
  * Very big thanks to Mark Scherer for setting me straight on _queryCount() and 
- * help with refactoring AutocacheBehaviour into AutocachePlugin
+ * help with refactoring CakephpAutocacheBehaviour into CakephpAutocachePlugin
  *  - https://github.com/dereuromark
  * 
  * @author Nicholas de Jong
- * @copyright Nicholas de Jong
- * ***************************************************************************/
+ * @link https://github.com/ndejong/CakephpAutocachePlugin
+ ****************************************************************************/
 
 /**
  * AutocacheSource

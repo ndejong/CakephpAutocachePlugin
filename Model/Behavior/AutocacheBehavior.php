@@ -1,20 +1,19 @@
 <?php
 
-/* ***************************************************************************
+/****************************************************************************
  * Cakephp AutocachePlugin
  * Nicholas de Jong - http://nicholasdejong.com - https://github.com/ndejong
- * 18 December 2011
  * 
  * Very big thanks to Mark Scherer for setting me straight on _queryCount() and 
  * help with refactoring CakephpAutocacheBehaviour into CakephpAutocachePlugin
  *  - https://github.com/dereuromark
  * 
  * @author Nicholas de Jong
- * @copyright Nicholas de Jong
- * ***************************************************************************/
+ * @link https://github.com/ndejong/CakephpAutocachePlugin
+ ****************************************************************************/
 
 class AutocacheBehavior extends ModelBehavior {
-	
+
 	/**
 	 * $runtime - stores runtime configuration parameters
 	 * 
@@ -28,7 +27,7 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @var string 
 	 */
 	public $cachename_prefix = 'autocache';
-	
+
 	/**
 	 * $__cached_results - stores the cached results while the fall through on the 
 	 * dummy datasource occurs - enables the return of cached data in afterFind()
@@ -44,7 +43,7 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @param array $config 
 	 */
 	public function setup(Model $model, $config = array()) {
-		
+
 		// > default_cache - is the default cache name, which by default 
 		// is the string "default" - confused?  You just need to make sure 
 		// you have an appropriate Cache::config('default',array(...)) in 
@@ -69,16 +68,13 @@ class AutocacheBehavior extends ModelBehavior {
 			
 			// name of the autocache dummy datasource *config* name
 			'dummy_datasource' => 'autocache',
-		), (array) $config);
+				), (array) $config);
 
 		// Create the new cache config
 		$newCacheName = $this->runtime[$model->alias]['default_cache'] . 'Model' . $model->alias;
 		$defaultCacheConfig = Cache::config($this->runtime[$model->alias]['default_cache']);
 		$modelCacheConfig = array_merge(
-			$defaultCacheConfig['settings'],
-			array(
-				'groups' => array($newCacheName)
-			)
+			$defaultCacheConfig['settings'], array('groups' => array($newCacheName))
 		);
 
 		Cache::config($newCacheName, $modelCacheConfig);
@@ -92,14 +88,14 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @param array $query 
 	 */
 	public function beforeFind(Model $model, $query) {
-            
+
 		// Determine if we are even going to try using the cache
 		if (isset($query['autocache']) && ($query['autocache'] === false)) {
 			return true; // return early as we have nothing to do
 		}
 
 		// Cache everything by default
-		if(!isset($query['autocache'])){
+		if (!isset($query['autocache'])) {
 			$query['autocache'] = true;
 		}
 
@@ -118,13 +114,13 @@ class AutocacheBehavior extends ModelBehavior {
 
 			// Note the original useDbConfig
 			$this->runtime[$model->alias]['useDbConfig'] = $model->useDbConfig;
-			
+
 			// Check if a DATABASE_CONFIG has been made for the dummy_datasource 
 			// if not establish one based on standard naming
 			$database_config = &ConnectionManager::$config;
-			if(!isset($database_config->{$this->runtime[$model->alias]['dummy_datasource']})) {
+			if (!isset($database_config->{$this->runtime[$model->alias]['dummy_datasource']})) {
 				$datasource_name = (string) $this->runtime[$model->alias]['dummy_datasource'];
-				$database_config->$datasource_name = array('datasource' => str_replace('Behavior','',get_class($this)).'.AutocacheSource', 'database'=>null);
+				$database_config->$datasource_name = array('datasource' => str_replace('Behavior', '', get_class($this)) . '.AutocacheSource', 'database' => null);
 			}
 
 			// Use a dummy database connection to prevent any query
@@ -180,9 +176,8 @@ class AutocacheBehavior extends ModelBehavior {
 		if (is_string($query['autocache'])) {
 			$this->runtime[$model->alias]['config'] = $query['autocache'];
 			$this->runtime[$model->alias]['name'] = $this->_generateCacheName($model, $query);
-
 		} else {  // All other cache setups
-
+		
 			// Manage the cache config
 			if (isset($query['autocache']['config']) && !empty($query['autocache']['config'])) {
 				$this->runtime[$model->alias]['config'] = $query['autocache']['config'];
@@ -207,7 +202,6 @@ class AutocacheBehavior extends ModelBehavior {
 		if (isset($query['autocache']['flush']) && $query['autocache']['flush'] === true) {
 			$this->runtime[$model->alias]['flush'] = true;
 		}
-
 	}
 
 	/**
@@ -235,20 +229,17 @@ class AutocacheBehavior extends ModelBehavior {
 	/**
 	 * _loadCachedResults
 	 */
-	protected function _loadCachedResults($model) {
+	protected function _loadCachedResults(Model $model) {
 
 		// Flush the cache if required
 		if (isset($this->runtime[$model->alias]['flush']) && true === $this->runtime[$model->alias]['flush']) {
 			Cache::delete($this->runtime[$model->alias]['name'], $this->runtime[$model->alias]['config']);
 			$this->__cached_results = false;
-		}
-		else {
+		} else {
 			// Catch the cached result
 			$this->__cached_results = Cache::read($this->runtime[$model->alias]['name'], $this->runtime[$model->alias]['config']);
 		}
 	}
-
-
 
 	/**
 	 * afterSave Callback
@@ -276,6 +267,7 @@ class AutocacheBehavior extends ModelBehavior {
 	 * @return void
 	 */
 	public function afterDelete(Model $model) {
+
 		$cacheGroupName = $this->runtime[$model->alias]['default_cache'];
 		$cacheName = $cacheGroupName;
 
