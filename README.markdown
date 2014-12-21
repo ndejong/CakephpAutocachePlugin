@@ -148,6 +148,15 @@ From the Controller through a Behavior "attach":-
 Questions and Answers
 ---------------------
 
+Q: What about cache grouping?
+A: Grouping based on (Model + Cache Config) is a great idea, unfortunately as at
+   CakePHP 2.5.7 it does not *seem* possible since after the initial call to
+   Cache::config() it is not possible to define new groups.  The work-around for
+   this is to implement per-group configs, however, if you do this calls to
+   Cache::clear() appear to cause subsequent calls to Cache::write() to not write
+   to the (FileEngine) cache - I'd really like to be shown wrong on this, more time
+   required to nut out a solution, cache grouping is a good thing.
+
 Q: I want more control over cache times, cache locations etc.  
 A: It's right in front of you :)  The way to achieve this is to specify a new 
    cache configuration for the "stuff" you are wanting to cache.  This allows you
