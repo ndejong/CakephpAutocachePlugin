@@ -1,0 +1,12 @@
+{ 
+	"name": "ndejong/CakephpAutocachePlugin",
+	"description": "CakephpAutocachePlugin is a CakePHP 2.2+ Plugin that makes query caching as easy as adding a 'autocache'=>true parameter to your Model query",
+	"type": "cakephp-plugin",
+	"keywords": [ "cakephp", "plugin", "cache" ],
+	"homepage": "https://github.com/ndejong/CakephpAutocachePlugin",
+	"authors": [{
+		"name": "Nicholas de Jong", "email": "me@nicholasdejong.com" 
+	}],
+	"require": { "composer/installers": "*" },
+	"extra": { "installer-name": "Autocache" }
+}
