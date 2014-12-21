@@ -8,27 +8,5 @@
  * @link https://github.com/ndejong/CakephpAutocachePlugin
  ****************************************************************************/
 
-/**
- * AutocacheSource
- */
-class AutocacheSource extends DataSource {
-
-	/**
-	 * __construct
-	 * 
-	 * @param array $config 
-	 */
-	public function __construct($config = array()) {
-		parent::__construct($config);
-	}
-
-	/**
-	 * isConnected
-	 * 
-	 * @return bool 
-	 */
-	function isConnected() {
-		return true;
-	}
-
+class AutocacheException extends CakeException {
 }

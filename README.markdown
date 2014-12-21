@@ -1,10 +1,19 @@
 CakephpAutocachePlugin
 ======================
 
-CakephpAutocachePlugin is a CakePHP 2.5.x Plugin that makes query caching as easy 
+CakephpAutocachePlugin is a CakePHP 2.2+ Plugin that makes query caching as easy 
 as adding a 'autocache'=>true parameter to your Model query.  This plugin follows 
 on from CakephpAutocacheBehavior on Mark Scherer's (https://github.com/dereuromark) 
 suggestions, thanks Mark!
+
+The CakephpAutocachePlugin PHPUnit tests have successfully been run with:-
+ - cakephp-2.5.7
+ - cakephp-2.4.10
+ - cakephp-2.3.10
+
+NB: CakephpAutocachePlugin uses Cache grouping functionality which only became 
+available in CakePHP version 2.2 - Groups are defined on a per Model basis hence
+changes to a Model will invalidate all other cached data for the same Model
 
 Download
 --------
@@ -105,13 +114,13 @@ the behavior is not there the variable will not be set...
 
 ### Autocache Behavior Settings
 
- - default_cache << defines the default cache configuration name to use when a 
-   find query contains an 'autocache' parameter without an explicit cache 
-   configuration name.  By default the name is 'default'
+ - cache_config_name_default << defines the default cache configuration name to 
+   use when a find query contains an 'autocache' parameter without an explicit 
+   cache configuration name.  By default the name is 'default'
 
- - check_cache << tells Autocache to check if the cache configuration name that 
-   is about to be used has actually been defined, this helps you prevent silly 
-   mistakes.  By default this parameter sets itself to true when 
+ - cache_config_name_check << tells Autocache to check if the cache configuration 
+   name that is about to be used has actually been defined, this helps you prevent 
+   silly mistakes.  By default this parameter sets itself to true when 
    Configure::read('debug') is greater than 0 and otherwise false.  There may be
    a small speed improvement in setting this to false.
 
