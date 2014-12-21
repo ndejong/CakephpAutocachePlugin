@@ -6,10 +6,12 @@ as adding a 'autocache'=>true parameter to your Model query.  This plugin follow
 on from CakephpAutocacheBehavior on Mark Scherer's (https://github.com/dereuromark) 
 suggestions, thanks Mark!
 
-The CakephpAutocachePlugin PHPUnit tests have successfully been run with:-
+The CakephpAutocachePlugin PHPUnit tests have been confirmed against:-
+ - cakephp-2.6.0-RC1
  - cakephp-2.5.7
  - cakephp-2.4.10
  - cakephp-2.3.10
+ - cakephp-2.2.9
 
 NB: CakephpAutocachePlugin uses Cache grouping functionality which only became 
 available in CakePHP version 2.2 - Groups are defined on a per Model basis hence
