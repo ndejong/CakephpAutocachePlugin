@@ -24,7 +24,7 @@ Download
 Install
 -------
 
-### Step 1
+### Step 1 - via github.com
 Copy or symlink CakephpAutocachePlugin into a path named Autocache in your Plugin
 path like this:-
 
@@ -34,6 +34,10 @@ Take careful note of the pathname, the name is "Autocache", not AutocachePlugin
 or CakephpAutocachePlugin, it's just Autocache.  I spell this out because it's
 an easy thing to trip up on especially if your pulling this down from github or
 unpacking from a tarball.
+
+### Step 1 - via composer
+Add the following to the require section of your composer.json:-
+    "ndejong/cakephp-autocache-plugin": "dev-master"
 
 ### Step 2
 Make sure you have at least one standard CakePHP cache configuration setup in 
