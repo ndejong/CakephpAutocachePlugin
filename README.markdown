@@ -19,6 +19,9 @@ changes to a Model will invalidate all other cached data for the same Model
 
 Download
 --------
+ - https://github.com/verbnetworks/CakephpAutocachePlugin
+ 
+NB: this repo has been moved (2018-07) from its original location at:-
  - https://github.com/ndejong/CakephpAutocachePlugin
 
 Install
@@ -37,7 +40,7 @@ unpacking from a tarball.
 
 ### Step 1 - via composer
 Add the following to the require section of your composer.json:-
-    "ndejong/cakephp-autocache-plugin": "dev-master"
+    "verbnetworks/cakephp-autocache-plugin": "dev-master"
 
 ### Step 2
 Make sure you have at least one standard CakePHP cache configuration setup in 
@@ -193,9 +196,6 @@ Q: What's the history?
 A: AutocachePlugin follows on from AutocacheBehavior which was an an improvement 
    on "Automatic model data caching for CakePHP" that I wrote a while back.  I
    borrowed from ideas "jamienay" had put forward in his automatic_query_caching
-
- - nicholasdejong.com/story/automatic-model-data-caching-cakephp
- - github.com/jamienay/automatic_query_caching
 
 Q: What's different about CakephpAutocachePlugin to CakephpAutocacheBehavior?  
 A: Probably the biggest "thing" is the change in the find parameter option name

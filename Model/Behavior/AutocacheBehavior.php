@@ -2,14 +2,14 @@
 
 /****************************************************************************
  * Cakephp AutocachePlugin
- * Nicholas de Jong - http://nicholasdejong.com - https://github.com/ndejong
+ * Verb Networks Pty Ltd - http://verbnetworks.com - https://github.com/verbnetworks
  * 
  * Very big thanks to Mark Scherer for setting me straight on _queryCount() and 
  * help with refactoring CakephpAutocacheBehaviour into CakephpAutocachePlugin
  *  - https://github.com/dereuromark
  * 
  * @author Nicholas de Jong
- * @link https://github.com/ndejong/CakephpAutocachePlugin
+ * @link https://github.com/verbnetworks/CakephpAutocachePlugin
  ****************************************************************************/
 
 App::uses('AutocacheException', 'Autocache.Error/Exception');

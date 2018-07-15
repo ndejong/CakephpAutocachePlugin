@@ -2,10 +2,10 @@
 
 /****************************************************************************
  * Cakephp AutocachePlugin
- * Nicholas de Jong - http://nicholasdejong.com - https://github.com/ndejong
+ * Verb Networks Pty Ltd - http://verbnetworks.com - https://github.com/verbnetworks
  * 
  * @author Nicholas de Jong
- * @link https://github.com/ndejong/CakephpAutocachePlugin
+ * @link https://github.com/verbnetworks/CakephpAutocachePlugin
  ****************************************************************************/
 
 class AutocacheException extends CakeException {
